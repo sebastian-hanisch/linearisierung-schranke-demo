@@ -86,7 +86,7 @@ with st.expander("So funktioniert es", expanded=True):
 2. **LP lösen** (HiGHS aus `scipy`): bis n = 8 sofort, n = 9 und 10 auf Knopfdruck (n = 10: rund eine Viertelminute), darüber nicht: die Zahl der Variablen wächst wie `n⁴`.
 3. **Dual Ascent:** je Runde für jedes Paar (Bauteil, Platz) eine kleine lineare Zuordnung lösen, ihre Kosten in eine lineare Kostenmatrix verschieben und die Reste symmetrisch verteilen. Die Schranke ist die kleinste lineare Zuordnung über der Kostenmatrix; sie steigt von Runde zu Runde. **Runde 1 ist die Gilmore–Lawler-Schranke.**
 4. **Die Lücke:** (Optimum − Schranke) / Optimum. Bei Instanzen, die sich nicht aufzählen lassen, steht die beste gefundene Lösung (beste von 200 steilsten Abstiegen) an der Stelle des Optimums; die Lücke ist dann **höchstens** so groß.
-5. **Feste Instanzen:** Vergleiche laufen über feste Seeds (n = 6: 20, n = 8: 10, große Instanzen: 10 je Familie), nie über einen einzelnen.
+5. **Feste Instanzen:** Vergleiche zwischen Schranken laufen über feste Seeds (n = 6: 20, n = 8: 10, große Instanzen: 10 je Familie); die Standardinstanz und die Handbeispiele sind Einzelfälle zum Nachrechnen.
         """
     )
 
@@ -238,7 +238,7 @@ st.markdown("---")
 # --- Experiment 5: große Instanzen --------------------------------------------------------------------------------------------------------------
 
 st.subheader("🔬 Experiment 5: Wo das LP nicht mehr geht")
-st.caption("Für n = 12 und 16 ist das LP zu groß und eine Aufzählung unmöglich: Gilmore–Lawler, Dual Ascent und projizierte Schranke gegen die beste gefundene Lösung (beste von 200 steilsten Abstiegen), je Familie zehn feste Instanzen. Die Lücken sind **obere Grenzen** der wahren Lücke.")
+st.caption("Für n = 12 und 16 ist das LP zu groß und eine Aufzählung unmöglich: Gilmore–Lawler, Dual Ascent und projizierte Schranke gegen die beste gefundene Lösung (beste von 200 steilsten Abstiegen), je Familie zehn feste Instanzen. Die Lücken sind **obere Grenzen** der wahren Lücke, solange die Schranke nichtnegativ ist.")
 if not st.session_state.get("large_ok"):
     st.info("Die Rechnung für n = 12 und 16 dauert rund anderthalb Minuten (auf Streamlit Cloud eher länger): der Dual Ascent löst je Runde n² Zuordnungen. Mit dem Knopf starten:")
     if st.button("⏱️ Große Instanzen rechnen (n = 12, 16)", key="large_button"):
@@ -271,9 +271,9 @@ st.markdown(
 | Annahme | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
 | **Der Dual Ascent ist eine einfache Eigenfassung** | Er verteilt Kosten nur durch Mittelwertbildung und steht nach wenigen Runden; die Literatur (Hahn–Grant) kennt weitere Schritte und erreicht laut den Autoren Werte nahe am LP. Alle Befunde über den Dual Ascent gelten für diese Fassung. | – |
-| **Die sechs Familien sind erfunden** | Echte Platinen oder QAPLIB-Instanzen haben andere Strukturen; „das LP ist fast immer schärfer als die anderen Schranken“ gilt nur für diese Familien. | – |
+| **Die sechs Familien sind erfunden** | Echte Platinen oder QAPLIB-Instanzen haben andere Strukturen; „das LP ist bei acht Bauteilen fast immer schärfer als die anderen Schranken“ gilt nur für diese Familien. | – |
 | **Das LP wird nur bis n = 10 gelöst** | Danach wächst es zu stark (n = 12: 17 568 Variablen, Minuten); für größere Instanzen gibt es hier nur Gilmore–Lawler, projizierte Schranke und Dual Ascent. Die Rechenzeiten hängen vom Rechner ab. | Stück 7 (semidefinite Schranke mit ADMM) |
-| **Das Optimum ist nur bis n = 9 bekannt** | Ab n = 10 steht die beste von 200 steilsten Abstiegen an seiner Stelle; die Lücken sind dann obere Grenzen der wahren Lücke. | Stück 8 (Branch and Bound) |
+| **Das Optimum ist nur bis n = 9 bekannt** | Ab n = 10 steht die beste von 200 steilsten Abstiegen an seiner Stelle; die Lücken sind dann obere Grenzen der wahren Lücke, solange die Schranke nichtnegativ ist (bei negativer projizierter Schranke ist die gemeldete Lücke zu klein). | Stück 8 (Branch and Bound) |
 | **Nur die erste Stufe der Linearisierung** | Stärkere Stufen (RLT2, RLT3) geben engere Schranken, brauchen aber `n⁶` bzw. `n⁸` Variablen; hier nicht umgesetzt. | – |
 | **Wenige Instanzen** | n = 6: 20 Instanzen je Familie, n = 8: 10, große Instanzen: 10; Unterschiede von wenigen Prozentpunkten zwischen Familien sind nicht belastbar. | – |
 """
@@ -297,7 +297,7 @@ Das LP hat $n^2 + n^2(n-1)^2$ Variablen und $2n + 2n^2(n-1) + n^2(n-1)^2/2$ Glei
 Weil alle $c \ge 0$ bleiben, ist $\mathrm{cost}(p) \ge \sum_i b_{i p_i}$, also mindestens die kleinste lineare Zuordnung über $b$: die Schranke dieser Runde. $b$ wächst von Runde zu Runde, die Schranke steigt monoton. Runde 1 ist die Gilmore–Lawler-Schranke (die Zuordnung auf den Rang-eins-Kosten $\tfrac12 F_{ik} D_{jl}$ ist das kleinste Skalarprodukt).
 Da die Kosten im LP die Umformungen (a) und (b) nur als zulässige Verschiebungen von Dualvariablen nutzen, liegt jede Runde höchstens beim LP-Wert (im Test an jeder Vergleichsinstanz geprüft).
 
-**Lücke.** $(\mathrm{opt} - B)/\mathrm{opt}$ für eine Schranke $B$; ohne bekanntes Optimum steht die beste gefundene Lösung $U \ge \mathrm{opt}$ an dessen Stelle, und wegen $B/U \le B/\mathrm{opt}$ ist $(U - B)/U \ge (\mathrm{opt} - B)/\mathrm{opt}$ eine **obere Grenze** der wahren Lücke.
+**Lücke.** $(\mathrm{opt} - B)/\mathrm{opt}$ für eine Schranke $B$; ohne bekanntes Optimum steht die beste gefundene Lösung $U \ge \mathrm{opt}$ an dessen Stelle, und wegen $B/U \le B/\mathrm{opt}$ ist $(U - B)/U \ge (\mathrm{opt} - B)/\mathrm{opt}$ eine **obere Grenze** der wahren Lücke, solange $B \ge 0$ ist (Gilmore–Lawler, Dual Ascent und LP sind nichtnegativ, die projizierte Schranke nicht immer: dann ist die gemeldete Lücke zu klein).
 
 **Literatur.** W. P. Adams, T. A. Johnson (1994) für die Linearisierung, P. Hahn, T. Grant (1998) für den Dual Ascent und S. E. Karisch, E. Çela, J. Clausen, T. Espersen (1999) für den Vergleich beider: Angaben aus der Fachliteratur übernommen, hier **nicht nachgelesen**.
 Die Bedingungen des LP und der hier gebaute Dual Ascent sind **eigene** Herleitungen und werden durch Tests (Aufzählung, Zulässigkeit von $y = x \cdot x$, `scipy` für die Zuordnung) geprüft. Die Zahlen dieser Demo sind eigene Rechnungen an eigenen, erfundenen Familien.

@@ -269,7 +269,7 @@ def verdict_large(by_n: dict):
         gt_pb = sum(1 for r in rows if r["da_gt_pb"])
         gt_glb = sum(1 for r in rows if r["da_gt_glb"])
         parts.append(f"n = {n}: Gilmore–Lawler {pct(median_of(rows, 'gap_glb'), 1)}, Dual Ascent {pct(median_of(rows, 'gap_da'), 1)}, projizierte Schranke {pct(median_of(rows, 'gap_pb'), 1)} (Dual Ascent über Gilmore–Lawler in {gt_glb}, über der projizierten Schranke in {gt_pb} von {len(rows)})")
-    return "info", (f"Schranken gegen die beste gefundene Lösung (beste von {C.STARTS} Abstiegen; Lücken sind obere Grenzen), Median über alle Familien: " + "; ".join(parts) + ". Das LP wird hier nicht gelöst.")
+    return "info", (f"Schranken gegen die beste gefundene Lösung (beste von {C.STARTS} Abstiegen; Lücken sind obere Grenzen, solange die Schranke nichtnegativ ist), Median über alle Familien: " + "; ".join(parts) + ". Das LP wird hier nicht gelöst.")
 
 
 def verdict_core(s: Settings, v: dict):
