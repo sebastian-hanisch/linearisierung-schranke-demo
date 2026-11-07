@@ -1,9 +1,8 @@
 # Linearisierung und Dual Ascent – Streamlit-Demo
 
-<!-- TODO nach dem Deploy: direkt hierher den Live-Link setzen (Leerzeile davor und danach):
-**[→ Demo live ausprobieren](https://sebastianhanisch-linearisierung-schranke-demo.streamlit.app/)** -->
+**[→ Demo live ausprobieren](https://sebastianhanisch-linearisierung-schranke-demo.streamlit.app/)**
 
-Stück 5 von 15 der **Konzepte-Reihe „Anordnen: relaxieren und runden“** für die Website „Sebastian Hanisch – Operations Research und Machine Learning“ (die Konzepte-Seite der Reihe gibt es noch nicht). Stück 3, [Die Gilmore–Lawler-Schranke](https://github.com/sebastian-hanisch/gilmore-lawler-demo), beweist eine untere Schranke mit einer Zuordnung und ist grob; Stück 4, [Eigenwertschranke und Projektion](https://github.com/sebastian-hanisch/eigenwert-schranke-demo), nutzt das Spektrum. Dieses Stück **verstärkt** die Gilmore–Lawler-Schranke durch **Linearisierung** (Kante der Reihe: *fix*) und fragt, was das kostet und ob sich der Gewinn billiger holen lässt.
+Stück 5 von 15 der **Konzepte-Reihe „Anordnen: relaxieren und runden“** für die Website „Sebastian Hanisch – Operations Research und Machine Learning“ (die [Konzepte-Seite der Reihe](https://sebastianhanisch.net/konzepte-anordnen.html)). Stück 3, [Die Gilmore–Lawler-Schranke](https://github.com/sebastian-hanisch/gilmore-lawler-demo), beweist eine untere Schranke mit einer Zuordnung und ist grob; Stück 4, [Eigenwertschranke und Projektion](https://github.com/sebastian-hanisch/eigenwert-schranke-demo), nutzt das Spektrum. Dieses Stück **verstärkt** die Gilmore–Lawler-Schranke durch **Linearisierung** (Kante der Reihe: *fix*) und fragt, was das kostet und ob sich der Gewinn billiger holen lässt.
 
 ## Warum dieses Problem
 
